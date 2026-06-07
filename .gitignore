@@ -1,0 +1,5 @@
+_*.png
+_tmp_*.html
+__pycache__/
+*.pyc
+images/_cover_candidates/

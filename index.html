@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Föräldrakurser — lugna kurser inför och efter förlossningen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF5EC; --cream-2:#F4E9DA; --ink:#3B2A22; --ink-soft:#6B5246;
+    --terracotta:#C97B5A; --terracotta-deep:#A85D40; --blush:#E7C3B5;
+    --sage:#8C9B7E; --sage-deep:#6E7E60; --gold:#D8A55C;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;color:var(--ink);
+    background:radial-gradient(125% 120% at 15% 5%, var(--cream) 0%, var(--cream) 55%, var(--cream-2) 100%);
+    min-height:100vh;-webkit-font-smoothing:antialiased;
+    background-attachment:fixed;
+  }
+  /* grain */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;mix-blend-mode:multiply;opacity:.6;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+  }
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:clamp(36px,7vw,90px) clamp(22px,5vw,48px) 64px}
+
+  header{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:clamp(34px,6vw,64px)}
+  .eyebrow{font-weight:700;letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:var(--terracotta-deep);display:flex;align-items:center;gap:.7em;margin-bottom:18px}
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--terracotta);border-radius:2px}
+  h1{font-family:'Fraunces';font-weight:500;font-size:clamp(40px,8vw,76px);line-height:1.02;letter-spacing:-.015em;max-width:14ch}
+  h1 em{font-style:italic;color:var(--terracotta-deep)}
+  .tagline{margin-top:20px;font-size:clamp(15px,2.4vw,20px);color:var(--ink-soft);line-height:1.55;max-width:46ch}
+
+  /* language picker */
+  .langbox{flex:0 0 auto;background:rgba(255,255,255,.55);border:1px solid rgba(168,93,64,.2);border-radius:16px;padding:16px 18px;backdrop-filter:blur(4px)}
+  .langbox label{display:block;font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:10px;color:var(--terracotta-deep);margin-bottom:9px}
+  .langbox select{font-family:'Mulish';font-size:15px;border:1px solid rgba(168,93,64,.25);border-radius:10px;padding:9px 12px;background:var(--cream);color:var(--ink);cursor:pointer;min-width:150px}
+  .langbox .hint{margin-top:9px;font-size:11px;color:var(--ink-soft);font-style:italic;max-width:18ch}
+
+  /* course cards */
+  .grid{display:grid;grid-template-columns:1fr;gap:clamp(18px,3vw,28px)}
+  @media(min-width:720px){.grid{grid-template-columns:1fr 1fr}}
+  .card{
+    position:relative;display:flex;flex-direction:column;overflow:hidden;
+    background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.18);border-radius:20px;
+    text-decoration:none;color:inherit;transition:transform .25s ease, box-shadow .25s ease;
+    box-shadow:0 18px 40px -28px rgba(59,42,34,.5);
+  }
+  .card:hover{transform:translateY(-4px);box-shadow:0 30px 60px -30px rgba(59,42,34,.55)}
+  .card .thumb{aspect-ratio:16/10;overflow:hidden;background:var(--blush)}
+  .card .thumb img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+  .card:hover .thumb img{transform:scale(1.04)}
+  .card .body{padding:clamp(20px,3vw,28px)}
+  .card .kicker{font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:10.5px;color:var(--terracotta-deep);margin-bottom:10px}
+  .card h2{font-family:'Fraunces';font-weight:500;font-size:clamp(24px,3.4vw,32px);margin-bottom:10px;line-height:1.08}
+  .card p{font-size:15px;color:var(--ink-soft);line-height:1.5}
+  .card .go{margin-top:18px;display:inline-flex;align-items:center;gap:.5em;font-weight:600;color:var(--terracotta-deep);font-size:15px}
+  .card .go .arr{transition:transform .25s ease}
+  .card:hover .go .arr{transform:translateX(4px)}
+  .card .meta{margin-top:14px;display:flex;gap:14px;font-size:12px;color:var(--ink-soft)}
+  .card .meta span{display:inline-flex;align-items:center;gap:.4em}
+
+  /* coming soon */
+  .card.soon{opacity:.72;cursor:default;border-style:dashed}
+  .card.soon:hover{transform:none;box-shadow:0 18px 40px -28px rgba(59,42,34,.5)}
+  .card.soon .placeholder{aspect-ratio:16/10;display:flex;align-items:center;justify-content:center;
+    background:radial-gradient(120% 120% at 70% 30%, var(--blush), var(--cream-2) 70%);color:var(--terracotta-deep);font-family:'Fraunces';font-style:italic;font-size:18px}
+  .soonpill{position:absolute;top:14px;left:14px;background:rgba(43,33,27,.82);color:var(--cream);font-size:10.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:5px 11px;border-radius:999px;z-index:2}
+
+  footer{margin-top:clamp(40px,6vw,70px);padding-top:26px;border-top:1px solid rgba(59,42,34,.12);
+    display:flex;justify-content:space-between;gap:18px;flex-wrap:wrap;font-size:13px;color:var(--ink-soft)}
+  footer b{color:var(--ink);font-weight:600}
+  .feedback{background:rgba(140,155,126,.14);border:1px solid rgba(110,126,96,.28);border-radius:14px;padding:14px 18px;font-size:13.5px;color:var(--ink);line-height:1.5;margin-top:30px}
+  .feedback b{color:var(--sage-deep)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">Med Marie · barnmorska</div>
+      <h1>Lugna kurser <em>för er</em> väntan</h1>
+      <p class="tagline">Personliga föräldrakurser inför och efter förlossningen. Varje sida kan läsas upp — på ditt språk, i din takt — så att kunskapen finns där även när Marie inte är i rummet.</p>
+    </div>
+    <div class="langbox">
+      <label for="lib-lang">Uppläsningsspråk</label>
+      <select id="lib-lang" aria-label="Välj språk för uppläsning">
+        <option value="sv">Svenska</option>
+        <option value="en">English</option>
+        <option value="ar">العربية (arabiska)</option>
+        <option value="so">Soomaali (somaliska)</option>
+        <option value="fa">فارسی (persiska)</option>
+      </select>
+      <div class="hint">Gäller uppläsningen inne i kurserna</div>
+    </div>
+  </header>
+
+  <div class="grid">
+
+    <a class="card" href="forlossning/">
+      <div class="thumb"><img src="forlossning/images/01-hero.png" alt="Förlossningskurs"></div>
+      <div class="body">
+        <div class="kicker">Inför födseln</div>
+        <h2>Förlossning</h2>
+        <p>En lugn genomgång av faserna, rummet, smärtlindring, andning och partnerns roll — så att dagen känns mindre okänd.</p>
+        <div class="meta"><span>◷ ~1–1,5 h</span><span>♪ uppläsning</span><span>21 sidor</span></div>
+        <span class="go">Öppna kursen <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <a class="card" href="amning/">
+      <div class="thumb"><img src="amning/images/cover.png" alt="Amningskurs"></div>
+      <div class="body">
+        <div class="kicker">Efter födseln</div>
+        <h2>Amning</h2>
+        <p>Hur mjölken fungerar, tag-greppet, ställningar, vanliga problem och partnerns roll — tryggt och utan skuld.</p>
+        <div class="meta"><span>◷ ~1 h</span><span>♪ uppläsning</span><span>15 sidor</span></div>
+        <span class="go">Öppna kursen <span class="arr">→</span></span>
+      </div>
+    </a>
+
+    <div class="card soon">
+      <span class="soonpill">Kommer</span>
+      <div class="placeholder">Första tiden hemma</div>
+      <div class="body">
+        <div class="kicker">Efter födseln</div>
+        <h2>Nyfödda</h2>
+        <p>Sömn, skrik, skötsel och de stora frågorna de första veckorna — och när man ska söka vård.</p>
+      </div>
+    </div>
+
+    <div class="card soon">
+      <span class="soonpill">Kommer</span>
+      <div class="placeholder">Återhämtning</div>
+      <div class="body">
+        <div class="kicker">Efter födseln</div>
+        <h2>Bäckenbotten</h2>
+        <p>Läkning och återhämtning efter förlossningen, med ljudledd knipträning.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="feedback">
+    <b>Det här är en tidig version för feedback.</b> Innehållet är utkast som granskas av barnmorska innan användning. Uppläsningen i Maries röst på fler språk läggs till löpande.
+  </div>
+
+  <footer>
+    <div>Föräldrakurser — byggt med <b>Marie</b></div>
+    <div>Lita på kroppen, på varandra, och be om hjälp tidigt.</div>
+  </footer>
+
+</div>
+
+<script>
+  // sync chosen narration language to the decks (shared localStorage key)
+  const sel = document.getElementById('lib-lang');
+  const saved = localStorage.getItem('kurs-lang');
+  if(saved) sel.value = saved;
+  sel.addEventListener('change', () => localStorage.setItem('kurs-lang', sel.value));
+</script>
+</body>
+</html>
