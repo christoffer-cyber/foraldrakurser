@@ -16,7 +16,8 @@ KEY = os.environ.get("ELEVEN_KEY") or Path.home().joinpath(".config/elevenlabs/a
 
 def gen(voice, text):
     body = json.dumps({"text": text, "model_id": "eleven_v3",
-                       "voice_settings": {"stability": 0.5, "similarity_boost": 0.8}}).encode()
+                       "voice_settings": {"stability": 0.5, "similarity_boost": 0.9,
+                                          "use_speaker_boost": True}}).encode()
     req = urllib.request.Request(
         f"https://api.elevenlabs.io/v1/text-to-speech/{voice}?output_format=mp3_44100_128",
         data=body, headers={"xi-api-key": KEY, "Content-Type": "application/json"}, method="POST")
