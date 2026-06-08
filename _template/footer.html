@@ -6,9 +6,13 @@
 <div class="dots" id="dots"></div>
 <div class="counter" id="counter"><b>1</b> / 15</div>
 <div class="hint" id="hint">← → bläddra · F helskärm</div>
-<div class="narrate">
-  <button class="narrate-btn" id="narrateBtn" aria-label="Lyssna på sidan">▶ <span>Lyssna</span></button>
-  <select id="langSel" aria-label="Språk">
+<div class="player" id="player">
+  <button class="pbtn play" id="pPlay" aria-label="Spela uppläsning">▶</button>
+  <button class="pbtn skip" id="pBack" aria-label="Bakåt 15 sekunder">−15</button>
+  <div class="pbar" id="pBar"><div class="pfill" id="pFill"></div></div>
+  <span class="ptime" id="pTime">Lyssna</span>
+  <button class="pbtn skip" id="pFwd" aria-label="Framåt 15 sekunder">+15</button>
+  <select class="plang" id="langSel" aria-label="Språk">
     <option value="sv">Svenska</option>
     <option value="en">English</option>
     <option value="ar">العربية</option>
@@ -68,52 +72,58 @@
 
   setTimeout(() => hint.classList.add('fade'), 5000);
 
-  // ---- unified audio: affirmations + per-slide narration ----
-  let curAudio = null, curBtn = null, curKind = null;
-  function resetBtn(){
-    if(!curBtn) return;
-    curBtn.classList.remove('playing');
-    if(curKind === 'aff'){ curBtn.textContent = '▶'; }
-    else { const s = curBtn.querySelector('span'); if(s) s.textContent = 'Lyssna'; }
-    curBtn = null;
-  }
-  function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio = null; } resetBtn(); curKind = null; }
-  function playSrc(src, btn, kind){
-    const same = (btn === curBtn);
-    stopAudio();
-    if(same) return;
-    const a = new Audio(src); curAudio = a; curBtn = btn; curKind = kind;
-    btn.classList.add('playing');
-    if(kind === 'aff'){ btn.textContent = '❚❚'; }
-    else { const s = btn.querySelector('span'); if(s) s.textContent = 'Spelar…'; }
-    a.play().catch(()=>{});
-    a.onended = () => { if(btn === curBtn) stopAudio(); };
-    a.onerror = () => { if(kind === 'nar') toast('Uppläsning läggs till snart'); if(btn === curBtn) stopAudio(); };
-  }
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('.play');
-    if(btn) playSrc(btn.dataset.src, btn, 'aff');
-  });
-
-  // per-slide narration (any language, Maries röst)
+  // ---- per-slide narration player + inline audio buttons ----
   const langSel = document.getElementById('langSel');
-  const narrateBtn = document.getElementById('narrateBtn');
-  const savedLang = localStorage.getItem('kurs-lang');
-  if(savedLang) langSel.value = savedLang;
-  langSel.addEventListener('change', () => { localStorage.setItem('kurs-lang', langSel.value); stopAudio(); });
-  narrateBtn.addEventListener('click', () => {
-    playSrc('audio/narration/' + langSel.value + '/slide-' + (i + 1) + '.mp3', narrateBtn, 'nar');
-  });
+  const sl = localStorage.getItem('kurs-lang'); if(sl) langSel.value = sl;
+  const pPlay=document.getElementById('pPlay'), pBack=document.getElementById('pBack'),
+        pFwd=document.getElementById('pFwd'), pBar=document.getElementById('pBar'),
+        pFill=document.getElementById('pFill'), pTime=document.getElementById('pTime');
+  let nar=null, aff=null, affBtn=null, toastEl;
 
-  let toastEl;
-  function toast(msg){
-    if(!toastEl){ toastEl = document.createElement('div'); toastEl.className = 'narrate-toast'; document.body.appendChild(toastEl); }
-    toastEl.textContent = msg; toastEl.classList.add('show');
-    clearTimeout(toast._t); toast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  function fmt(t){ t=isFinite(t)?t:0; const m=Math.floor(t/60), s=Math.floor(t%60); return m+':'+(s<10?'0':'')+s; }
+  function paint(){ const d=(nar&&isFinite(nar.duration))?nar.duration:0, c=nar?nar.currentTime:0;
+    pFill.style.width=(d?c/d*100:0)+'%'; pTime.textContent=fmt(c)+' / '+fmt(d); }
+  function icon(p){ pPlay.textContent=p?'❚❚':'▶'; pPlay.classList.toggle('on',p); }
+  function toast(m){ if(!toastEl){ toastEl=document.createElement('div'); toastEl.className='narrate-toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent=m; toastEl.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>toastEl.classList.remove('show'),2400); }
+
+  function stopAff(){ if(aff){ aff.pause(); aff=null; } if(affBtn){ affBtn.classList.remove('playing'); affBtn.textContent='▶'; affBtn=null; } }
+  function resetPlayer(){ if(nar){ nar.pause(); nar=null; } icon(false); pFill.style.width='0%'; pTime.textContent='Lyssna'; }
+  function loadNar(){
+    stopAff();
+    nar=new Audio('audio/narration/'+langSel.value+'/slide-'+(i+1)+'.mp3');
+    nar.addEventListener('timeupdate',paint);
+    nar.addEventListener('loadedmetadata',paint);
+    nar.addEventListener('ended',()=>icon(false));
+    nar.addEventListener('error',()=>{ toast('Uppläsning läggs till snart'); resetPlayer(); });
   }
+  pPlay.addEventListener('click',()=>{
+    if(!nar) loadNar();
+    if(nar.paused){ stopAff(); nar.play().then(()=>icon(true)).catch(()=>{}); }
+    else { nar.pause(); icon(false); }
+  });
+  pBack.addEventListener('click',()=>{ if(nar) nar.currentTime=Math.max(0,nar.currentTime-15); });
+  pFwd.addEventListener('click',()=>{ if(nar&&isFinite(nar.duration)) nar.currentTime=Math.min(nar.duration,nar.currentTime+15); });
+  pBar.addEventListener('click',e=>{ if(!nar||!isFinite(nar.duration)) return; const r=pBar.getBoundingClientRect();
+    nar.currentTime=Math.min(nar.duration,Math.max(0,(e.clientX-r.left)/r.width*nar.duration)); paint(); });
+  langSel.addEventListener('change',()=>{ localStorage.setItem('kurs-lang',langSel.value); resetPlayer(); });
+
+  // inline affirmation / exercise buttons (.play)
+  document.addEventListener('click', e => {
+    const btn=e.target.closest('.play'); if(!btn) return;
+    const same=(btn===affBtn);
+    if(nar){ nar.pause(); icon(false); }
+    stopAff();
+    if(same) return;
+    aff=new Audio(btn.dataset.src); affBtn=btn;
+    btn.classList.add('playing'); btn.textContent='❚❚';
+    aff.play().catch(()=>{});
+    aff.onended=()=>{ if(btn===affBtn) stopAff(); };
+    aff.onerror=()=>{ toast('Ljud läggs till snart'); stopAff(); };
+  });
 
   let _go = go;
-  go = function(n){ stopAudio(); _go(n); };
+  go = function(n){ if(nar) nar.pause(); stopAff(); _go(n); resetPlayer(); };
 
   render();
 </script>

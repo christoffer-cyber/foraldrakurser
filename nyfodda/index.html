@@ -216,14 +216,23 @@
     .cycle .arrow{transform:rotate(90deg)}
   }
 
-  /* per-slide narration bar */
-  .narrate{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:55;display:flex;gap:8px;align-items:center}
-  .narrate-btn{font-family:'Mulish';font-weight:600;font-size:13px;border:none;cursor:pointer;background:rgba(201,123,90,.94);color:#fff;border-radius:999px;padding:7px 16px 7px 14px;display:flex;align-items:center;gap:.45em;transition:background .2s,transform .2s;box-shadow:0 6px 18px -8px rgba(59,42,34,.6)}
-  .narrate-btn:hover{background:var(--terracotta-deep);transform:translateY(-1px)}
-  .narrate-btn.playing{background:var(--sage-deep)}
-  .narrate select{font-family:'Mulish';font-size:12px;border:none;border-radius:999px;padding:7px 12px;background:rgba(251,245,236,.94);color:var(--ink);cursor:pointer;box-shadow:0 6px 18px -8px rgba(59,42,34,.6)}
-  .narrate-toast{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:55;background:rgba(43,33,27,.92);color:var(--cream);font-size:12px;padding:6px 14px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none}
+  /* per-slide narration player */
+  .player{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:55;display:flex;align-items:center;gap:9px;
+    background:rgba(251,245,236,.93);border:1px solid rgba(168,93,64,.22);border-radius:999px;
+    padding:6px 10px;box-shadow:0 8px 24px -10px rgba(59,42,34,.5);backdrop-filter:blur(6px);max-width:min(92vw,560px)}
+  .pbtn{border:none;cursor:pointer;background:none;font-family:'Mulish';font-weight:700;display:flex;align-items:center;justify-content:center}
+  .pbtn.play{width:30px;height:30px;border-radius:50%;background:var(--terracotta);color:#fff;font-size:11px;padding-left:1px;flex:0 0 auto;transition:background .2s}
+  .pbtn.play.on{background:var(--sage-deep);padding-left:0}
+  .pbtn.play:hover{background:var(--terracotta-deep)}
+  .pbtn.skip{color:var(--ink-soft);font-size:11px;padding:0 2px;white-space:nowrap}
+  .pbtn.skip:hover{color:var(--terracotta-deep)}
+  .pbar{position:relative;flex:1 1 130px;min-width:70px;height:5px;border-radius:3px;background:rgba(168,93,64,.18);cursor:pointer}
+  .pfill{position:absolute;left:0;top:0;bottom:0;width:0;background:var(--terracotta);border-radius:3px}
+  .ptime{font-family:'Mulish';font-size:11px;color:var(--ink-soft);white-space:nowrap;font-variant-numeric:tabular-nums;min-width:34px;text-align:center}
+  .plang{border:none;background:rgba(168,93,64,.10);border-radius:999px;font-family:'Mulish';font-size:11px;color:var(--ink);padding:5px 8px;cursor:pointer;flex:0 0 auto}
+  .narrate-toast{position:fixed;top:58px;left:50%;transform:translateX(-50%);z-index:55;background:rgba(43,33,27,.92);color:var(--cream);font-size:12px;padding:6px 14px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none}
   .narrate-toast.show{opacity:1}
+  @media(max-width:560px){ .ptime{display:none} }
 
   @media (max-width:680px){
     .layout-split,.hero{grid-template-columns:1fr}
@@ -451,9 +460,13 @@
 <div class="dots" id="dots"></div>
 <div class="counter" id="counter"><b>1</b> / 15</div>
 <div class="hint" id="hint">← → bläddra · F helskärm</div>
-<div class="narrate">
-  <button class="narrate-btn" id="narrateBtn" aria-label="Lyssna på sidan">▶ <span>Lyssna</span></button>
-  <select id="langSel" aria-label="Språk">
+<div class="player" id="player">
+  <button class="pbtn play" id="pPlay" aria-label="Spela uppläsning">▶</button>
+  <button class="pbtn skip" id="pBack" aria-label="Bakåt 15 sekunder">−15</button>
+  <div class="pbar" id="pBar"><div class="pfill" id="pFill"></div></div>
+  <span class="ptime" id="pTime">Lyssna</span>
+  <button class="pbtn skip" id="pFwd" aria-label="Framåt 15 sekunder">+15</button>
+  <select class="plang" id="langSel" aria-label="Språk">
     <option value="sv">Svenska</option>
     <option value="en">English</option>
     <option value="ar">العربية</option>
@@ -513,52 +526,58 @@
 
   setTimeout(() => hint.classList.add('fade'), 5000);
 
-  // ---- unified audio: affirmations + per-slide narration ----
-  let curAudio = null, curBtn = null, curKind = null;
-  function resetBtn(){
-    if(!curBtn) return;
-    curBtn.classList.remove('playing');
-    if(curKind === 'aff'){ curBtn.textContent = '▶'; }
-    else { const s = curBtn.querySelector('span'); if(s) s.textContent = 'Lyssna'; }
-    curBtn = null;
-  }
-  function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio = null; } resetBtn(); curKind = null; }
-  function playSrc(src, btn, kind){
-    const same = (btn === curBtn);
-    stopAudio();
-    if(same) return;
-    const a = new Audio(src); curAudio = a; curBtn = btn; curKind = kind;
-    btn.classList.add('playing');
-    if(kind === 'aff'){ btn.textContent = '❚❚'; }
-    else { const s = btn.querySelector('span'); if(s) s.textContent = 'Spelar…'; }
-    a.play().catch(()=>{});
-    a.onended = () => { if(btn === curBtn) stopAudio(); };
-    a.onerror = () => { if(kind === 'nar') toast('Uppläsning läggs till snart'); if(btn === curBtn) stopAudio(); };
-  }
-  document.addEventListener('click', e => {
-    const btn = e.target.closest('.play');
-    if(btn) playSrc(btn.dataset.src, btn, 'aff');
-  });
-
-  // per-slide narration (any language, Maries röst)
+  // ---- per-slide narration player + inline audio buttons ----
   const langSel = document.getElementById('langSel');
-  const narrateBtn = document.getElementById('narrateBtn');
-  const savedLang = localStorage.getItem('kurs-lang');
-  if(savedLang) langSel.value = savedLang;
-  langSel.addEventListener('change', () => { localStorage.setItem('kurs-lang', langSel.value); stopAudio(); });
-  narrateBtn.addEventListener('click', () => {
-    playSrc('audio/narration/' + langSel.value + '/slide-' + (i + 1) + '.mp3', narrateBtn, 'nar');
-  });
+  const sl = localStorage.getItem('kurs-lang'); if(sl) langSel.value = sl;
+  const pPlay=document.getElementById('pPlay'), pBack=document.getElementById('pBack'),
+        pFwd=document.getElementById('pFwd'), pBar=document.getElementById('pBar'),
+        pFill=document.getElementById('pFill'), pTime=document.getElementById('pTime');
+  let nar=null, aff=null, affBtn=null, toastEl;
 
-  let toastEl;
-  function toast(msg){
-    if(!toastEl){ toastEl = document.createElement('div'); toastEl.className = 'narrate-toast'; document.body.appendChild(toastEl); }
-    toastEl.textContent = msg; toastEl.classList.add('show');
-    clearTimeout(toast._t); toast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  function fmt(t){ t=isFinite(t)?t:0; const m=Math.floor(t/60), s=Math.floor(t%60); return m+':'+(s<10?'0':'')+s; }
+  function paint(){ const d=(nar&&isFinite(nar.duration))?nar.duration:0, c=nar?nar.currentTime:0;
+    pFill.style.width=(d?c/d*100:0)+'%'; pTime.textContent=fmt(c)+' / '+fmt(d); }
+  function icon(p){ pPlay.textContent=p?'❚❚':'▶'; pPlay.classList.toggle('on',p); }
+  function toast(m){ if(!toastEl){ toastEl=document.createElement('div'); toastEl.className='narrate-toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent=m; toastEl.classList.add('show'); clearTimeout(toast._t); toast._t=setTimeout(()=>toastEl.classList.remove('show'),2400); }
+
+  function stopAff(){ if(aff){ aff.pause(); aff=null; } if(affBtn){ affBtn.classList.remove('playing'); affBtn.textContent='▶'; affBtn=null; } }
+  function resetPlayer(){ if(nar){ nar.pause(); nar=null; } icon(false); pFill.style.width='0%'; pTime.textContent='Lyssna'; }
+  function loadNar(){
+    stopAff();
+    nar=new Audio('audio/narration/'+langSel.value+'/slide-'+(i+1)+'.mp3');
+    nar.addEventListener('timeupdate',paint);
+    nar.addEventListener('loadedmetadata',paint);
+    nar.addEventListener('ended',()=>icon(false));
+    nar.addEventListener('error',()=>{ toast('Uppläsning läggs till snart'); resetPlayer(); });
   }
+  pPlay.addEventListener('click',()=>{
+    if(!nar) loadNar();
+    if(nar.paused){ stopAff(); nar.play().then(()=>icon(true)).catch(()=>{}); }
+    else { nar.pause(); icon(false); }
+  });
+  pBack.addEventListener('click',()=>{ if(nar) nar.currentTime=Math.max(0,nar.currentTime-15); });
+  pFwd.addEventListener('click',()=>{ if(nar&&isFinite(nar.duration)) nar.currentTime=Math.min(nar.duration,nar.currentTime+15); });
+  pBar.addEventListener('click',e=>{ if(!nar||!isFinite(nar.duration)) return; const r=pBar.getBoundingClientRect();
+    nar.currentTime=Math.min(nar.duration,Math.max(0,(e.clientX-r.left)/r.width*nar.duration)); paint(); });
+  langSel.addEventListener('change',()=>{ localStorage.setItem('kurs-lang',langSel.value); resetPlayer(); });
+
+  // inline affirmation / exercise buttons (.play)
+  document.addEventListener('click', e => {
+    const btn=e.target.closest('.play'); if(!btn) return;
+    const same=(btn===affBtn);
+    if(nar){ nar.pause(); icon(false); }
+    stopAff();
+    if(same) return;
+    aff=new Audio(btn.dataset.src); affBtn=btn;
+    btn.classList.add('playing'); btn.textContent='❚❚';
+    aff.play().catch(()=>{});
+    aff.onended=()=>{ if(btn===affBtn) stopAff(); };
+    aff.onerror=()=>{ toast('Ljud läggs till snart'); stopAff(); };
+  });
 
   let _go = go;
-  go = function(n){ stopAudio(); _go(n); };
+  go = function(n){ if(nar) nar.pause(); stopAff(); _go(n); resetPlayer(); };
 
   render();
 </script>
