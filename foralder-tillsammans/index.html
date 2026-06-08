@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Bli förälder tillsammans</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF5EC;
+    --cream-2:#F4E9DA;
+    --ink:#3B2A22;
+    --ink-soft:#6B5246;
+    --terracotta:#C97B5A;
+    --terracotta-deep:#A85D40;
+    --blush:#E7C3B5;
+    --sage:#8C9B7E;
+    --sage-deep:#6E7E60;
+    --gold:#D8A55C;
+    --paper-line:rgba(59,42,34,.12);
+    --shadow:0 24px 60px -28px rgba(59,42,34,.45);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%}
+  body{
+    font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;
+    background:#2c211b;
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+
+  .slide{
+    position:absolute;
+    width:min(96vw, calc(96vh * 16 / 9));
+    height:min(96vh, calc(96vw * 9 / 16));
+    background:radial-gradient(120% 140% at 12% 8%, var(--cream) 0%, var(--cream) 55%, var(--cream-2) 100%);
+    border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
+    opacity:0;visibility:hidden;transform:scale(.985);
+    transition:opacity .55s ease, transform .55s ease, visibility .55s;display:flex;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:scale(1)}
+
+  .slide::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;opacity:.7;
+  }
+
+  .pad{padding:clamp(28px,5vh,64px) clamp(34px,5vw,72px)}
+  .slide .inner{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;justify-content:center}
+
+  .eyebrow{
+    font-family:'Mulish';font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+    font-size:clamp(10px,1.35vh,14px);color:var(--terracotta-deep);
+    display:flex;align-items:center;gap:.7em;margin-bottom:1.4vh;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--terracotta);border-radius:2px}
+
+  h1{font-family:'Fraunces';font-weight:500;font-size:clamp(34px,7.4vh,76px);line-height:1.02;letter-spacing:-.01em;color:var(--ink)}
+  h2{font-family:'Fraunces';font-weight:500;font-size:clamp(28px,5.6vh,52px);line-height:1.05;letter-spacing:-.01em;color:var(--ink);margin-bottom:2.2vh}
+  h2 em{font-style:italic;color:var(--terracotta-deep)}
+  .lead{font-size:clamp(15px,2.3vh,21px);color:var(--ink-soft);line-height:1.5;max-width:32em}
+
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:1.35vh}
+  ul.clean li{position:relative;padding-left:1.9em;font-size:clamp(14px,2.15vh,19px);line-height:1.4;color:var(--ink)}
+  ul.clean li::before{content:"";position:absolute;left:0;top:.55em;width:.7em;height:.7em;border-radius:50%;background:var(--blush);box-shadow:inset 0 0 0 2px var(--terracotta)}
+  ul.clean li b{font-weight:700;color:var(--ink)}
+  ul.clean li span{color:var(--ink-soft)}
+
+  .partner{
+    margin-top:2.4vh;background:linear-gradient(135deg, rgba(140,155,126,.18), rgba(140,155,126,.07));
+    border:1px solid rgba(110,126,96,.32);border-radius:14px;padding:clamp(14px,2.4vh,22px) clamp(16px,2.4vw,26px);
+  }
+  .partner .tag{font-family:'Mulish';font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(9px,1.25vh,12px);color:var(--sage-deep);display:flex;align-items:center;gap:.6em;margin-bottom:.7vh}
+  .partner .tag svg{width:1.1em;height:1.1em}
+  .partner p{font-size:clamp(13px,2vh,18px);line-height:1.42;color:var(--ink)}
+
+  .note{margin-top:2.2vh;font-size:clamp(11px,1.6vh,14px);font-style:italic;color:var(--ink-soft);opacity:.85}
+
+  .layout-center .inner{align-items:center;text-align:center}
+  .layout-center .lead{margin-left:auto;margin-right:auto}
+
+  .layout-split{display:grid;grid-template-columns:1.05fr .95fr}
+  .layout-split .col-text{display:flex}
+  .layout-split .col-media{position:relative;overflow:hidden}
+  .col-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+  .layout-split .col-media::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;box-shadow:inset 22px 0 40px -24px rgba(59,42,34,.5)}
+  .col-media::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg, rgba(251,245,236,.10), rgba(168,93,64,.10))}
+  .col-media{background:radial-gradient(120% 120% at 70% 30%, var(--blush), var(--cream-2) 70%)}
+
+  /* HERO */
+  .hero{display:grid;grid-template-columns:1fr 1fr}
+  .hero .col-text{display:flex;align-items:center}
+  .hero .col-media{background:transparent;display:flex;align-items:center;justify-content:center;padding:clamp(16px,3.5vh,42px)}
+  .hero .col-media::before,.hero .col-media::after{display:none}
+  .hero .col-media img{position:static;width:100%;height:100%;object-fit:contain;border-radius:10px;filter:drop-shadow(0 24px 44px rgba(59,42,34,.22))}
+  .hero h1{font-size:clamp(42px,10vh,104px)}
+  .hero .sub{font-family:'Fraunces';font-style:italic;font-weight:400;font-size:clamp(17px,2.8vh,26px);color:var(--ink-soft);margin-top:2vh}
+  .hero .names{margin-top:4vh;display:flex;flex-direction:column;gap:.4vh}
+  .hero .names .for{font-size:clamp(11px,1.5vh,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--terracotta-deep);font-weight:700}
+  .hero .names .who{font-family:'Fraunces';font-size:clamp(22px,3.6vh,34px);color:var(--ink)}
+  .hero .names .leader{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);margin-top:.6vh}
+
+  /* closing */
+  .closing h1{font-size:clamp(40px,9vh,90px)}
+  .closing .ask{font-family:'Fraunces';font-style:italic;font-size:clamp(20px,3.4vh,34px);color:var(--terracotta-deep);margin-top:3vh}
+  .closing .calm{margin-top:2.4vh;font-size:clamp(13px,2vh,18px);color:var(--ink-soft)}
+
+  /* chrome */
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--terracotta);width:0;z-index:50;transition:width .45s ease;border-radius:0 3px 3px 0}
+  .counter{position:fixed;bottom:18px;right:22px;z-index:50;font-family:'Mulish';font-weight:600;font-size:13px;color:var(--cream);letter-spacing:.08em;opacity:.8}
+  .counter b{color:#fff}
+  .hint{position:fixed;bottom:18px;left:22px;z-index:50;font-family:'Mulish';font-size:12px;color:var(--cream);opacity:.55;letter-spacing:.04em;transition:opacity .6s}
+  .hint.fade{opacity:0}
+  .dots{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:7px;align-items:center}
+  .dots button{width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;background:rgba(251,245,236,.35);padding:0;transition:all .3s}
+  .dots button.on{background:var(--terracotta);width:22px;border-radius:5px}
+  .navbtn{position:fixed;top:50%;transform:translateY(-50%);z-index:50;width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;background:rgba(251,245,236,.12);color:var(--cream);font-size:20px;display:flex;align-items:center;justify-content:center;transition:background .3s,opacity .3s;opacity:.4}
+  .navbtn:hover{background:rgba(251,245,236,.28);opacity:1}
+  #prev{left:16px}#next{right:16px}
+
+  /* affirmations + audio */
+  .affcol h3{font-family:'Fraunces';font-weight:500;font-size:clamp(16px,2.7vh,25px);margin-bottom:1.3vh;color:var(--terracotta-deep)}
+  .afflist{list-style:none;display:flex;flex-direction:column;gap:1.05vh}
+  .afflist.two{display:grid;grid-template-columns:1fr 1fr;gap:1.05vh clamp(18px,2.8vw,44px)}
+  .aff{display:flex;align-items:center;gap:.75em;font-size:clamp(12px,1.95vh,18px);line-height:1.3;color:var(--ink)}
+  .play{
+    flex:0 0 auto;width:clamp(26px,3.8vh,36px);height:clamp(26px,3.8vh,36px);border-radius:50%;
+    border:none;cursor:pointer;background:var(--terracotta);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.72em;padding-left:.12em;
+    transition:transform .2s,background .2s;
+  }
+  .play:hover{transform:scale(1.09);background:var(--terracotta-deep)}
+  .play.playing{background:var(--sage-deep);padding-left:0}
+
+  .featured-audio{
+    display:flex;align-items:center;gap:1em;margin:.4vh 0 2.4vh;
+    background:linear-gradient(135deg, rgba(201,123,90,.16), rgba(201,123,90,.05));
+    border:1px solid rgba(168,93,64,.28);border-radius:14px;
+    padding:clamp(12px,2.2vh,20px) clamp(16px,2vw,24px);max-width:30em;
+  }
+  .featured-audio .play{width:clamp(34px,5vh,48px);height:clamp(34px,5vh,48px);font-size:.95em}
+  .featured-audio .fa-text b{font-family:'Fraunces';font-weight:500;font-size:clamp(15px,2.4vh,21px);color:var(--ink);display:block}
+  .featured-audio .fa-text span{font-size:clamp(11px,1.6vh,14px);color:var(--ink-soft)}
+
+  /* highlight card */
+  .highlight{
+    margin-top:2.2vh;background:linear-gradient(135deg,rgba(201,123,90,.16),rgba(201,123,90,.06));
+    border:1px solid rgba(168,93,64,.3);border-radius:14px;padding:clamp(14px,2.4vh,22px) clamp(16px,2.4vw,26px);
+  }
+  .highlight .tag{font-family:'Mulish';font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(9px,1.25vh,12px);color:var(--terracotta-deep);margin-bottom:.7vh;display:block}
+  .highlight p{font-size:clamp(14px,2.2vh,19px);line-height:1.42;color:var(--ink);font-family:'Fraunces';font-style:italic}
+
+  /* ===== infographics ===== */
+  .cycle{display:flex;align-items:stretch;gap:0;margin:1.6vh 0 1.2vh;flex-wrap:wrap}
+  .cycle .node{flex:1 1 0;min-width:120px;background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.2);border-radius:14px;padding:clamp(12px,2.2vh,20px);text-align:center;display:flex;flex-direction:column;gap:.45em;align-items:center}
+  .cycle .node .ic{width:clamp(30px,4.6vh,44px);height:clamp(30px,4.6vh,44px);border-radius:50%;background:rgba(201,123,90,.15);color:var(--terracotta-deep);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:600;font-size:clamp(15px,2.5vh,22px)}
+  .cycle .node b{font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.1vh,19px);color:var(--ink)}
+  .cycle .node span{font-size:clamp(11px,1.55vh,14px);color:var(--ink-soft);line-height:1.3}
+  .cycle .arrow{display:flex;align-items:center;justify-content:center;color:var(--terracotta);font-size:clamp(18px,2.6vh,26px);padding:0 .35em}
+  .loopback{display:flex;align-items:center;gap:.7em;background:linear-gradient(135deg,rgba(140,155,126,.16),rgba(140,155,126,.06));border:1px solid rgba(110,126,96,.28);border-radius:12px;padding:clamp(11px,1.9vh,17px) clamp(14px,2vw,20px);font-size:clamp(12px,1.85vh,16px);color:var(--ink);line-height:1.4}
+  .loopback .lic{color:var(--sage-deep);flex:0 0 auto;display:flex;align-items:center}
+  .loopback .lic svg{width:1.5em;height:1.5em}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.8vw,22px);margin:1.5vh 0}
+  .stat{background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.2);border-radius:16px;padding:clamp(14px,2.4vh,22px) clamp(10px,1.4vw,16px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:.6em}
+  .stat .ic{width:clamp(38px,5.4vh,52px);height:clamp(38px,5.4vh,52px);border-radius:50%;background:rgba(201,123,90,.14);color:var(--terracotta-deep);display:flex;align-items:center;justify-content:center}
+  .stat .ic svg{width:52%;height:52%}
+  .stat b{font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.1vh,19px);color:var(--ink);line-height:1.1}
+  .stat span{font-size:clamp(11px,1.5vh,13.5px);color:var(--ink-soft);line-height:1.3}
+
+  .daybar{position:relative;height:clamp(50px,7.5vh,72px);background:linear-gradient(90deg,rgba(216,165,92,.10),rgba(201,123,90,.10));border:1px solid rgba(168,93,64,.18);border-radius:12px;margin:2vh 0 .6vh;overflow:hidden}
+  .daybar .cluster{position:absolute;top:0;bottom:0;right:0;width:30%;background:linear-gradient(90deg,rgba(201,123,90,0),rgba(201,123,90,.22));border-left:1px dashed rgba(168,93,64,.4)}
+  .daybar .feed{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--terracotta);transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(201,123,90,.15)}
+  .daybar .clbl{position:absolute;top:7px;right:9px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--terracotta-deep)}
+  .dayaxis{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft)}
+
+  .ps{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.8vw,20px);margin:1.3vh 0}
+  .pscard{background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.2);border-radius:14px;padding:clamp(13px,2.2vh,20px);display:flex;flex-direction:column;gap:.5em}
+  .pscard{border-left:3px solid var(--terracotta)}
+  .pscard .p{display:flex;align-items:center;gap:.5em;font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.05vh,18px);color:var(--ink)}
+  .pscard .s{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);line-height:1.35;padding-left:1.1em;position:relative}
+  .pscard .s::before{content:"\2192";position:absolute;left:0;color:var(--sage-deep);font-weight:700}
+
+  .storage{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vw,22px);margin:1.7vh 0 1vh}
+  .store{border-radius:16px;padding:clamp(16px,2.8vh,26px) clamp(10px,1.4vw,16px);text-align:center;border:1px solid rgba(168,93,64,.2)}
+  .store:nth-child(1){background:linear-gradient(160deg,rgba(216,165,92,.20),rgba(216,165,92,.05))}
+  .store:nth-child(2){background:linear-gradient(160deg,rgba(140,155,126,.20),rgba(140,155,126,.05))}
+  .store:nth-child(3){background:linear-gradient(160deg,rgba(120,150,175,.22),rgba(120,150,175,.05))}
+  .store .ic{color:var(--terracotta-deep);display:flex;justify-content:center;margin-bottom:.5vh}
+  .store .ic svg{width:clamp(26px,4vh,36px);height:clamp(26px,4vh,36px)}
+  .store .num{font-family:'Fraunces';font-weight:500;font-size:clamp(26px,5vh,46px);line-height:1;color:var(--ink)}
+  .store .unit{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);margin-top:.3vh}
+  .store .where{font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:clamp(9px,1.2vh,11px);color:var(--terracotta-deep);margin-top:.8vh}
+
+  .triage{display:grid;grid-template-columns:1fr;gap:clamp(10px,1.5vh,15px);margin:1.3vh 0}
+  .tri{display:flex;gap:.9em;align-items:flex-start;background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.16);border-left-width:5px;border-radius:12px;padding:clamp(12px,2vh,18px) clamp(14px,2vw,20px)}
+  .tri .dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;margin-top:.3em}
+  .tri.green{border-left-color:var(--sage-deep)} .tri.green .dot{background:var(--sage-deep)}
+  .tri.amber{border-left-color:var(--gold)} .tri.amber .dot{background:var(--gold)}
+  .tri.red{border-left-color:var(--terracotta-deep)} .tri.red .dot{background:var(--terracotta-deep)}
+  .tri b{font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.05vh,18px);color:var(--ink);display:block;margin-bottom:.15em}
+  .tri span{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);line-height:1.35}
+
+  @media(max-width:680px){
+    .stats,.storage,.ps{grid-template-columns:1fr 1fr}
+    .cycle{flex-direction:column}
+    .cycle .arrow{transform:rotate(90deg)}
+  }
+
+  /* per-slide narration bar */
+  .narrate{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:55;display:flex;gap:8px;align-items:center}
+  .narrate-btn{font-family:'Mulish';font-weight:600;font-size:13px;border:none;cursor:pointer;background:rgba(201,123,90,.94);color:#fff;border-radius:999px;padding:7px 16px 7px 14px;display:flex;align-items:center;gap:.45em;transition:background .2s,transform .2s;box-shadow:0 6px 18px -8px rgba(59,42,34,.6)}
+  .narrate-btn:hover{background:var(--terracotta-deep);transform:translateY(-1px)}
+  .narrate-btn.playing{background:var(--sage-deep)}
+  .narrate select{font-family:'Mulish';font-size:12px;border:none;border-radius:999px;padding:7px 12px;background:rgba(251,245,236,.94);color:var(--ink);cursor:pointer;box-shadow:0 6px 18px -8px rgba(59,42,34,.6)}
+  .narrate-toast{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:55;background:rgba(43,33,27,.92);color:var(--cream);font-size:12px;padding:6px 14px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none}
+  .narrate-toast.show{opacity:1}
+
+  @media (max-width:680px){
+    .layout-split,.hero{grid-template-columns:1fr}
+    .layout-split .col-media,.hero .col-media{display:none}
+    .afflist.two{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <section class="slide hero">
+  <div class="col-text pad">
+    <div class="inner">
+      <div class="eyebrow">Relationen efter barn</div>
+      <h1>Bli förälder<br>tillsammans</h1>
+      <div class="sub">Lugnt om er som par — när ni blir tre</div>
+      <div class="names">
+        <span class="for">För</span>
+        <span class="who">Felicia &amp; Joakim</span>
+        <span class="leader">Tillsammans med Marie</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-media"><img src="images/cover.png" alt="Föräldrapar med nyfödd i en lugn vardagsstund"></div>
+</section>
+
+<!-- 2 — AGENDA -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Idag</div>
+    <h2>Det här pratar vi om</h2>
+    <ul class="clean">
+      <li><b>Från par till föräldrar</b> <span>— vad som förändras</span></li>
+      <li><b>Sömnbrist &amp; tålamod</b> <span>— trötthet gör oss kortare mot varandra</span></li>
+      <li><b>Att dela på ansvaret</b> <span>— synliggör det osynliga arbetet</span></li>
+      <li><b>Prata när ni är trötta</b> <span>— och hitta tillbaka till närhet</span></li>
+      <li><b>Egen tid &amp; tid ihop</b> <span>— små stunder räcker långt</span></li>
+      <li><b>Konflikter, varandras mående &amp; när ni söker stöd</b></li>
+    </ul>
+    <p class="note">Det här är för er — avbryt och prata med varandra precis när ni vill.</p>
+  </div>
+</section>
+
+<!-- 3 — FRÅN PAR TILL FÖRÄLDRAR -->
+<section class="slide layout-split">
+  <div class="col-text pad">
+    <div class="inner">
+      <div class="eyebrow">En ny vardag</div>
+      <h2>Från par till <em>föräldrar</em></h2>
+      <p class="lead">Ni är fortfarande ni — men allt runtomkring ändras på en gång. Det är stort, och det tar tid att landa i.</p>
+      <ul class="clean" style="margin-top:1.6vh">
+        <li><b>Tiden krymper</b> <span>— det som var självklart ihop får samsas med ett barn som behöver er dygnet runt</span></li>
+        <li><b>Rollerna ritas om</b> <span>— ni blir ett team på ett nytt sätt, och det får kännas ovant</span></li>
+        <li><b>Känslorna svänger</b> <span>— stor kärlek och stor trötthet kan finnas samtidigt</span></li>
+      </ul>
+      <p class="note">Att relationen sätts på prov den första tiden är vanligt — inte ett tecken på att något är fel.</p>
+    </div>
+  </div>
+  <div class="col-media"><img src="images/forandras.png" alt="Par som sitter nära med ett sovande nyfött barn"></div>
+</section>
+
+<!-- 4 — SÖMNBRIST & TÅLAMOD -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Tröttheten talar</div>
+    <h2>Sömnbrist &amp; <em>tålamod</em></h2>
+    <p class="lead">När ni sover för lite blir tålamodet kortare — mot barnet, men mest mot varandra. Det är kroppen, inte er kärlek.</p>
+    <ul class="clean" style="margin-top:1.4vh">
+      <li><b>Trötthet låter värre</b> <span>— en suck eller ett tonfall kan landa hårdare än det var menat</span></li>
+      <li><b>Skjut upp de stora samtalen</b> <span>— ta dem utvilade, inte klockan tre på natten</span></li>
+      <li><b>Hjälps åt med sömnen</b> <span>— turas om, dela natten, sov när barnet sover</span></li>
+    </ul>
+    <div class="highlight">
+      <span class="tag">Att minnas</span>
+      <p>Det är tröttheten som är kort i tonen — inte ni mot varandra.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 — FÖRDELA ANSVARET -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Det osynliga arbetet</div>
+    <h2>Dela på <em>ansvaret</em></h2>
+    <p class="lead">Mycket av jobbet med ett barn syns inte — att planera, komma ihåg och hålla koll. Synliggör det, så blir det lättare att dela.</p>
+    <div class="ps">
+      <div class="pscard"><div class="p">"Du gör ju ingenting"</div><div class="s">Säg vad som behöver göras högt — den som bär allt i huvudet är ofta mest sliten.</div></div>
+      <div class="pscard"><div class="p">Allt fastnar hos en</div><div class="s">Dela upp hela uppgifter, inte bara "hjälpa till" — äg blöjor, mat eller tvätt fullt ut.</div></div>
+      <div class="pscard"><div class="p">Olika sätt att göra</div><div class="s">Det räcker att det blir gjort — låt var och en göra på sitt sätt.</div></div>
+      <div class="pscard"><div class="p">Tacksamheten glöms</div><div class="s">Säg tack för det vardagliga — att bli sedd orkar man mer av.</div></div>
+    </div>
+    <p class="note">Turas om, och stäm av då och då — behoven ändras vecka för vecka.</p>
+  </div>
+</section>
+
+<!-- 6 — KOMMUNIKATION NÄR MAN ÄR TRÖTT -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Prata fast ni är slut</div>
+    <h2>Korta ord, <em>gott uppsåt</em></h2>
+    <p class="lead">Ni hinner inte långa samtal nu — och det behövs inte. Lite, ofta och vänligt räcker långt.</p>
+    <div class="stats">
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.5v4.8l3.2 1.9"/></svg></div><b>Korta incheckningar</b><span>"Hur är det med dig?" räcker</span></div>
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20S5 15.6 5 10.6A3.6 3.6 0 0 1 12 8a3.6 3.6 0 0 1 7 2.6C19 15.6 12 20 12 20z"/></svg></div><b>Anta gott uppsåt</b><span>ni är på samma lag</span></div>
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12a7 7 0 0 1-9.5 6.5L5 20l1.5-4.5A7 7 0 1 1 20 12z"/></svg></div><b>Säg vad du behöver</b><span>be om hjälp, gissa inte</span></div>
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div><b>En sak i taget</b><span>inte allt mitt i natten</span></div>
+    </div>
+    <p class="note">Säg "jag blir ledsen när…" i stället för "du gör alltid…" — då lyssnar den andra lättare.</p>
+  </div>
+</section>
+
+<!-- 7 — NÄRHET IGEN -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">I er egen takt</div>
+    <h2>Hitta tillbaka till <em>närhet</em></h2>
+    <p class="lead">Närheten kommer tillbaka — både den fysiska och den känslomässiga — men sällan på en gång, och det är helt normalt.</p>
+    <ul class="clean" style="margin-top:1.4vh">
+      <li><b>Börja smått</b> <span>— en kram, en hand, att sitta nära räknas också</span></li>
+      <li><b>Ingen press på sex</b> <span>— kroppen läker och lusten svänger; den får ta den tid den tar</span></li>
+      <li><b>Närhet är många saker</b> <span>— att bli lyssnad på och avlastad skapar närhet det med</span></li>
+      <li><b>Prata om det</b> <span>— säg hur ni känner i stället för att gissa er till varandras behov</span></li>
+    </ul>
+    <p class="note">Det finns ingen tidtabell — jämför er inte med andra eller med hur det var förut.</p>
+  </div>
+</section>
+
+<!-- 8 — EGEN TID & TILLSAMMANSTID -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Små stunder räcker</div>
+    <h2>Egen tid &amp; <em>tid ihop</em></h2>
+    <p class="lead">Ni behöver inte hela kvällar — det är de små, återkommande stunderna som håller er nära.</p>
+    <div class="storage">
+      <div class="store"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.5v4.8l3.2 1.9"/></svg></div><div class="num">10 min</div><div class="unit">prata av dagen</div><div class="where">Varje dag</div></div>
+      <div class="store"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></div><div class="num">1 kväll</div><div class="unit">bara ni två</div><div class="where">Då och då</div></div>
+      <div class="store"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20S5 15.6 5 10.6A3.6 3.6 0 0 1 12 8a3.6 3.6 0 0 1 7 2.6C19 15.6 12 20 12 20z"/></svg></div><div class="num">30 sek</div><div class="unit">en lång kram</div><div class="where">När som helst</div></div>
+    </div>
+    <ul class="clean" style="margin-top:.4vh">
+      <li><b>Unna varandra paus</b> <span>— att en får sova eller gå ut ensam är omsorg om er båda</span></li>
+      <li><b>Ta emot hjälp</b> <span>— låt någon ni litar på passa, så ni kan andas en stund</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 9 — KONFLIKTER ÄR NORMALT -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Bråk betyder inte kris</div>
+    <h2>Konflikter är <em>normalt</em></h2>
+    <p class="lead">Nästan alla par bråkar mer den första tiden med barn. Att ni skaver ibland betyder inte att ni är fel för varandra.</p>
+    <div class="highlight">
+      <span class="tag">Trygg grund</span>
+      <p>Ni är på samma sida av bordet — problemet ligger på andra sidan, inte hos varandra.</p>
+    </div>
+    <ul class="clean" style="margin-top:1.8vh">
+      <li><b>Pausa i stället för att vinna</b> <span>— "kan vi ta det här sen?" är okej mitt i tröttheten</span></li>
+      <li><b>Reparera efteråt</b> <span>— ett "förlåt, jag var trött" läker mer än att ha rätt</span></li>
+    </ul>
+  </div>
+</section>
+
+<!-- 10 — STÖTTA VARANDRAS MÅENDE -->
+<section class="slide layout-split">
+  <div class="col-text pad">
+    <div class="inner">
+      <div class="eyebrow">Håll koll på varandra</div>
+      <h2>Stötta varandras <em>mående</em></h2>
+      <p class="lead">Den första tiden kan vara tung för vem som helst — och även partnern kan må dåligt, inte bara den som fött.</p>
+      <ul class="clean" style="margin-top:1.4vh">
+        <li><b>Fråga på riktigt</b> <span>— "hur mår du egentligen?" och stanna kvar för svaret</span></li>
+        <li><b>Märk varningstecken</b> <span>— ihållande nedstämdhet, oro, sömnsvårigheter trots trötthet eller att dra sig undan</span></li>
+        <li><b>Gäller er båda</b> <span>— nedstämdhet efter barn drabbar även partnern</span></li>
+      </ul>
+      <p class="note">Marie: nämn lokala kontaktvägar — BVC och vårdcentral finns för måendet, inte bara för barnet.</p>
+    </div>
+  </div>
+  <div class="col-media"><img src="images/prata.png" alt="Par som pratar nära vid köksbordet med sin bebis"></div>
+</section>
+
+<!-- 11 — NÄR SÖKA STÖD TILLSAMMANS -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Ni är inte ensamma</div>
+    <h2>När ni söker <em>stöd ihop</em></h2>
+    <p class="lead">Att be om stöd är klokt, inte ett misslyckande — och ofta lättare ju tidigare ni gör det.</p>
+    <div class="triage">
+      <div class="tri green"><div class="dot"></div><div><b>Prata med BVC eller öppna förskolan</b><span>Frågor om vardagen, sömnen och hur ni har det som familj — de finns just för det här.</span></div></div>
+      <div class="tri amber"><div class="dot"></div><div><b>Sök par- eller familjerådgivning</b><span>När ni kör fast i samma bråk om och om igen, eller känner er långt ifrån varandra.</span></div></div>
+      <div class="tri red"><div class="dot"></div><div><b>Sök hjälp nu</b><span>Om någon mår riktigt dåligt, känner sig hopplös, eller om det förekommer hot eller våld.</span></div></div>
+    </div>
+    <p class="note">Stöd dygnet runt: 1177 och vårdcentralen. Marie: lägg in era lokala nummer och verifiera nivåerna.</p>
+  </div>
+</section>
+
+<!-- 12 — AVSLUTNING -->
+<section class="slide closing layout-center">
+  <div class="pad inner">
+    <div class="eyebrow" style="justify-content:center">Tillsammans</div>
+    <h1>Ni bygger det<br>ihop.</h1>
+    <div class="ask">Era frågor?</div>
+    <div class="calm">Var snälla mot er själva och mot varandra — och be om stöd tidigt.</div>
+  </div>
+</section>
+</div>
+
+<button class="navbtn" id="prev" aria-label="Föregående">‹</button>
+<button class="navbtn" id="next" aria-label="Nästa">›</button>
+<div class="dots" id="dots"></div>
+<div class="counter" id="counter"><b>1</b> / 15</div>
+<div class="hint" id="hint">← → bläddra · F helskärm</div>
+<div class="narrate">
+  <button class="narrate-btn" id="narrateBtn" aria-label="Lyssna på sidan">▶ <span>Lyssna</span></button>
+  <select id="langSel" aria-label="Språk">
+    <option value="sv">Svenska</option>
+    <option value="en">English</option>
+    <option value="ar">العربية</option>
+    <option value="so">Soomaali</option>
+    <option value="fa">فارسی</option>
+  </select>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const dotsWrap = document.getElementById('dots');
+  const hint = document.getElementById('hint');
+
+  slides.forEach((_, idx) => {
+    const b = document.createElement('button');
+    b.addEventListener('click', () => go(idx));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function render(){
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    dots.forEach((d, idx) => d.classList.toggle('on', idx === i));
+    progress.style.width = ((i) / (total - 1) * 100) + '%';
+    counter.innerHTML = '<b>' + (i + 1) + '</b> / ' + total;
+  }
+  function go(n){ i = Math.max(0, Math.min(total - 1, n)); render(); }
+  function next(){ go(i + 1); }
+  function prev(){ go(i - 1); }
+
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('prev').addEventListener('click', prev);
+
+  document.addEventListener('keydown', e => {
+    if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); next(); }
+    else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); prev(); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(total - 1); }
+    else if(e.key.toLowerCase() === 'f'){
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  let tx = null;
+  document.addEventListener('touchstart', e => tx = e.changedTouches[0].clientX, {passive:true});
+  document.addEventListener('touchend', e => {
+    if(tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
+    tx = null;
+  }, {passive:true});
+
+  setTimeout(() => hint.classList.add('fade'), 5000);
+
+  // ---- unified audio: affirmations + per-slide narration ----
+  let curAudio = null, curBtn = null, curKind = null;
+  function resetBtn(){
+    if(!curBtn) return;
+    curBtn.classList.remove('playing');
+    if(curKind === 'aff'){ curBtn.textContent = '▶'; }
+    else { const s = curBtn.querySelector('span'); if(s) s.textContent = 'Lyssna'; }
+    curBtn = null;
+  }
+  function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio = null; } resetBtn(); curKind = null; }
+  function playSrc(src, btn, kind){
+    const same = (btn === curBtn);
+    stopAudio();
+    if(same) return;
+    const a = new Audio(src); curAudio = a; curBtn = btn; curKind = kind;
+    btn.classList.add('playing');
+    if(kind === 'aff'){ btn.textContent = '❚❚'; }
+    else { const s = btn.querySelector('span'); if(s) s.textContent = 'Spelar…'; }
+    a.play().catch(()=>{});
+    a.onended = () => { if(btn === curBtn) stopAudio(); };
+    a.onerror = () => { if(kind === 'nar') toast('Uppläsning läggs till snart'); if(btn === curBtn) stopAudio(); };
+  }
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.play');
+    if(btn) playSrc(btn.dataset.src, btn, 'aff');
+  });
+
+  // per-slide narration (any language, Maries röst)
+  const langSel = document.getElementById('langSel');
+  const narrateBtn = document.getElementById('narrateBtn');
+  const savedLang = localStorage.getItem('kurs-lang');
+  if(savedLang) langSel.value = savedLang;
+  langSel.addEventListener('change', () => { localStorage.setItem('kurs-lang', langSel.value); stopAudio(); });
+  narrateBtn.addEventListener('click', () => {
+    playSrc('audio/narration/' + langSel.value + '/slide-' + (i + 1) + '.mp3', narrateBtn, 'nar');
+  });
+
+  let toastEl;
+  function toast(msg){
+    if(!toastEl){ toastEl = document.createElement('div'); toastEl.className = 'narrate-toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent = msg; toastEl.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  }
+
+  let _go = go;
+  go = function(n){ stopAudio(); _go(n); };
+
+  render();
+</script>
+</body>
+</html>

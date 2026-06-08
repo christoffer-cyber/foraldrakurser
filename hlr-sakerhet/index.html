@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Trygghet & första hjälpen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400;1,9..144,500&family=Mulish:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF5EC;
+    --cream-2:#F4E9DA;
+    --ink:#3B2A22;
+    --ink-soft:#6B5246;
+    --terracotta:#C97B5A;
+    --terracotta-deep:#A85D40;
+    --blush:#E7C3B5;
+    --sage:#8C9B7E;
+    --sage-deep:#6E7E60;
+    --gold:#D8A55C;
+    --paper-line:rgba(59,42,34,.12);
+    --shadow:0 24px 60px -28px rgba(59,42,34,.45);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+
+  html,body{height:100%}
+  body{
+    font-family:'Mulish',-apple-system,'Segoe UI',sans-serif;
+    background:#2c211b;
+    color:var(--ink);
+    overflow:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .deck{position:fixed;inset:0;display:flex;align-items:center;justify-content:center}
+
+  .slide{
+    position:absolute;
+    width:min(96vw, calc(96vh * 16 / 9));
+    height:min(96vh, calc(96vw * 9 / 16));
+    background:radial-gradient(120% 140% at 12% 8%, var(--cream) 0%, var(--cream) 55%, var(--cream-2) 100%);
+    border-radius:18px;box-shadow:var(--shadow);overflow:hidden;
+    opacity:0;visibility:hidden;transform:scale(.985);
+    transition:opacity .55s ease, transform .55s ease, visibility .55s;display:flex;
+  }
+  .slide.active{opacity:1;visibility:visible;transform:scale(1)}
+
+  .slide::after{
+    content:"";position:absolute;inset:0;pointer-events:none;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    mix-blend-mode:multiply;opacity:.7;
+  }
+
+  .pad{padding:clamp(28px,5vh,64px) clamp(34px,5vw,72px)}
+  .slide .inner{position:relative;z-index:2;width:100%;display:flex;flex-direction:column;justify-content:center}
+
+  .eyebrow{
+    font-family:'Mulish';font-weight:700;letter-spacing:.22em;text-transform:uppercase;
+    font-size:clamp(10px,1.35vh,14px);color:var(--terracotta-deep);
+    display:flex;align-items:center;gap:.7em;margin-bottom:1.4vh;
+  }
+  .eyebrow::before{content:"";width:26px;height:2px;background:var(--terracotta);border-radius:2px}
+
+  h1{font-family:'Fraunces';font-weight:500;font-size:clamp(34px,7.4vh,76px);line-height:1.02;letter-spacing:-.01em;color:var(--ink)}
+  h2{font-family:'Fraunces';font-weight:500;font-size:clamp(28px,5.6vh,52px);line-height:1.05;letter-spacing:-.01em;color:var(--ink);margin-bottom:2.2vh}
+  h2 em{font-style:italic;color:var(--terracotta-deep)}
+  .lead{font-size:clamp(15px,2.3vh,21px);color:var(--ink-soft);line-height:1.5;max-width:32em}
+
+  ul.clean{list-style:none;display:flex;flex-direction:column;gap:1.35vh}
+  ul.clean li{position:relative;padding-left:1.9em;font-size:clamp(14px,2.15vh,19px);line-height:1.4;color:var(--ink)}
+  ul.clean li::before{content:"";position:absolute;left:0;top:.55em;width:.7em;height:.7em;border-radius:50%;background:var(--blush);box-shadow:inset 0 0 0 2px var(--terracotta)}
+  ul.clean li b{font-weight:700;color:var(--ink)}
+  ul.clean li span{color:var(--ink-soft)}
+
+  .partner{
+    margin-top:2.4vh;background:linear-gradient(135deg, rgba(140,155,126,.18), rgba(140,155,126,.07));
+    border:1px solid rgba(110,126,96,.32);border-radius:14px;padding:clamp(14px,2.4vh,22px) clamp(16px,2.4vw,26px);
+  }
+  .partner .tag{font-family:'Mulish';font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(9px,1.25vh,12px);color:var(--sage-deep);display:flex;align-items:center;gap:.6em;margin-bottom:.7vh}
+  .partner .tag svg{width:1.1em;height:1.1em}
+  .partner p{font-size:clamp(13px,2vh,18px);line-height:1.42;color:var(--ink)}
+
+  .note{margin-top:2.2vh;font-size:clamp(11px,1.6vh,14px);font-style:italic;color:var(--ink-soft);opacity:.85}
+
+  .layout-center .inner{align-items:center;text-align:center}
+  .layout-center .lead{margin-left:auto;margin-right:auto}
+
+  .layout-split{display:grid;grid-template-columns:1.05fr .95fr}
+  .layout-split .col-text{display:flex}
+  .layout-split .col-media{position:relative;overflow:hidden}
+  .col-media img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:1}
+  .layout-split .col-media::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;box-shadow:inset 22px 0 40px -24px rgba(59,42,34,.5)}
+  .col-media::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:linear-gradient(180deg, rgba(251,245,236,.10), rgba(168,93,64,.10))}
+  .col-media{background:radial-gradient(120% 120% at 70% 30%, var(--blush), var(--cream-2) 70%)}
+
+  /* HERO */
+  .hero{display:grid;grid-template-columns:1fr 1fr}
+  .hero .col-text{display:flex;align-items:center}
+  .hero .col-media{background:transparent;display:flex;align-items:center;justify-content:center;padding:clamp(16px,3.5vh,42px)}
+  .hero .col-media::before,.hero .col-media::after{display:none}
+  .hero .col-media img{position:static;width:100%;height:100%;object-fit:contain;border-radius:10px;filter:drop-shadow(0 24px 44px rgba(59,42,34,.22))}
+  .hero h1{font-size:clamp(42px,10vh,104px)}
+  .hero .sub{font-family:'Fraunces';font-style:italic;font-weight:400;font-size:clamp(17px,2.8vh,26px);color:var(--ink-soft);margin-top:2vh}
+  .hero .names{margin-top:4vh;display:flex;flex-direction:column;gap:.4vh}
+  .hero .names .for{font-size:clamp(11px,1.5vh,14px);letter-spacing:.2em;text-transform:uppercase;color:var(--terracotta-deep);font-weight:700}
+  .hero .names .who{font-family:'Fraunces';font-size:clamp(22px,3.6vh,34px);color:var(--ink)}
+  .hero .names .leader{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);margin-top:.6vh}
+
+  /* closing */
+  .closing h1{font-size:clamp(40px,9vh,90px)}
+  .closing .ask{font-family:'Fraunces';font-style:italic;font-size:clamp(20px,3.4vh,34px);color:var(--terracotta-deep);margin-top:3vh}
+  .closing .calm{margin-top:2.4vh;font-size:clamp(13px,2vh,18px);color:var(--ink-soft)}
+
+  /* chrome */
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--terracotta);width:0;z-index:50;transition:width .45s ease;border-radius:0 3px 3px 0}
+  .counter{position:fixed;bottom:18px;right:22px;z-index:50;font-family:'Mulish';font-weight:600;font-size:13px;color:var(--cream);letter-spacing:.08em;opacity:.8}
+  .counter b{color:#fff}
+  .hint{position:fixed;bottom:18px;left:22px;z-index:50;font-family:'Mulish';font-size:12px;color:var(--cream);opacity:.55;letter-spacing:.04em;transition:opacity .6s}
+  .hint.fade{opacity:0}
+  .dots{position:fixed;bottom:16px;left:50%;transform:translateX(-50%);z-index:50;display:flex;gap:7px;align-items:center}
+  .dots button{width:8px;height:8px;border-radius:50%;border:none;cursor:pointer;background:rgba(251,245,236,.35);padding:0;transition:all .3s}
+  .dots button.on{background:var(--terracotta);width:22px;border-radius:5px}
+  .navbtn{position:fixed;top:50%;transform:translateY(-50%);z-index:50;width:46px;height:46px;border-radius:50%;border:none;cursor:pointer;background:rgba(251,245,236,.12);color:var(--cream);font-size:20px;display:flex;align-items:center;justify-content:center;transition:background .3s,opacity .3s;opacity:.4}
+  .navbtn:hover{background:rgba(251,245,236,.28);opacity:1}
+  #prev{left:16px}#next{right:16px}
+
+  /* affirmations + audio */
+  .affcol h3{font-family:'Fraunces';font-weight:500;font-size:clamp(16px,2.7vh,25px);margin-bottom:1.3vh;color:var(--terracotta-deep)}
+  .afflist{list-style:none;display:flex;flex-direction:column;gap:1.05vh}
+  .afflist.two{display:grid;grid-template-columns:1fr 1fr;gap:1.05vh clamp(18px,2.8vw,44px)}
+  .aff{display:flex;align-items:center;gap:.75em;font-size:clamp(12px,1.95vh,18px);line-height:1.3;color:var(--ink)}
+  .play{
+    flex:0 0 auto;width:clamp(26px,3.8vh,36px);height:clamp(26px,3.8vh,36px);border-radius:50%;
+    border:none;cursor:pointer;background:var(--terracotta);color:#fff;
+    display:flex;align-items:center;justify-content:center;font-size:.72em;padding-left:.12em;
+    transition:transform .2s,background .2s;
+  }
+  .play:hover{transform:scale(1.09);background:var(--terracotta-deep)}
+  .play.playing{background:var(--sage-deep);padding-left:0}
+
+  .featured-audio{
+    display:flex;align-items:center;gap:1em;margin:.4vh 0 2.4vh;
+    background:linear-gradient(135deg, rgba(201,123,90,.16), rgba(201,123,90,.05));
+    border:1px solid rgba(168,93,64,.28);border-radius:14px;
+    padding:clamp(12px,2.2vh,20px) clamp(16px,2vw,24px);max-width:30em;
+  }
+  .featured-audio .play{width:clamp(34px,5vh,48px);height:clamp(34px,5vh,48px);font-size:.95em}
+  .featured-audio .fa-text b{font-family:'Fraunces';font-weight:500;font-size:clamp(15px,2.4vh,21px);color:var(--ink);display:block}
+  .featured-audio .fa-text span{font-size:clamp(11px,1.6vh,14px);color:var(--ink-soft)}
+
+  /* highlight card */
+  .highlight{
+    margin-top:2.2vh;background:linear-gradient(135deg,rgba(201,123,90,.16),rgba(201,123,90,.06));
+    border:1px solid rgba(168,93,64,.3);border-radius:14px;padding:clamp(14px,2.4vh,22px) clamp(16px,2.4vw,26px);
+  }
+  .highlight .tag{font-family:'Mulish';font-weight:700;letter-spacing:.14em;text-transform:uppercase;font-size:clamp(9px,1.25vh,12px);color:var(--terracotta-deep);margin-bottom:.7vh;display:block}
+  .highlight p{font-size:clamp(14px,2.2vh,19px);line-height:1.42;color:var(--ink);font-family:'Fraunces';font-style:italic}
+
+  /* ===== infographics ===== */
+  .cycle{display:flex;align-items:stretch;gap:0;margin:1.6vh 0 1.2vh;flex-wrap:wrap}
+  .cycle .node{flex:1 1 0;min-width:120px;background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.2);border-radius:14px;padding:clamp(12px,2.2vh,20px);text-align:center;display:flex;flex-direction:column;gap:.45em;align-items:center}
+  .cycle .node .ic{width:clamp(30px,4.6vh,44px);height:clamp(30px,4.6vh,44px);border-radius:50%;background:rgba(201,123,90,.15);color:var(--terracotta-deep);display:flex;align-items:center;justify-content:center;font-family:'Fraunces';font-weight:600;font-size:clamp(15px,2.5vh,22px)}
+  .cycle .node b{font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.1vh,19px);color:var(--ink)}
+  .cycle .node span{font-size:clamp(11px,1.55vh,14px);color:var(--ink-soft);line-height:1.3}
+  .cycle .arrow{display:flex;align-items:center;justify-content:center;color:var(--terracotta);font-size:clamp(18px,2.6vh,26px);padding:0 .35em}
+  .loopback{display:flex;align-items:center;gap:.7em;background:linear-gradient(135deg,rgba(140,155,126,.16),rgba(140,155,126,.06));border:1px solid rgba(110,126,96,.28);border-radius:12px;padding:clamp(11px,1.9vh,17px) clamp(14px,2vw,20px);font-size:clamp(12px,1.85vh,16px);color:var(--ink);line-height:1.4}
+  .loopback .lic{color:var(--sage-deep);flex:0 0 auto;display:flex;align-items:center}
+  .loopback .lic svg{width:1.5em;height:1.5em}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(12px,1.8vw,22px);margin:1.5vh 0}
+  .stat{background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.2);border-radius:16px;padding:clamp(14px,2.4vh,22px) clamp(10px,1.4vw,16px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:.6em}
+  .stat .ic{width:clamp(38px,5.4vh,52px);height:clamp(38px,5.4vh,52px);border-radius:50%;background:rgba(201,123,90,.14);color:var(--terracotta-deep);display:flex;align-items:center;justify-content:center}
+  .stat .ic svg{width:52%;height:52%}
+  .stat b{font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.1vh,19px);color:var(--ink);line-height:1.1}
+  .stat span{font-size:clamp(11px,1.5vh,13.5px);color:var(--ink-soft);line-height:1.3}
+
+  .daybar{position:relative;height:clamp(50px,7.5vh,72px);background:linear-gradient(90deg,rgba(216,165,92,.10),rgba(201,123,90,.10));border:1px solid rgba(168,93,64,.18);border-radius:12px;margin:2vh 0 .6vh;overflow:hidden}
+  .daybar .cluster{position:absolute;top:0;bottom:0;right:0;width:30%;background:linear-gradient(90deg,rgba(201,123,90,0),rgba(201,123,90,.22));border-left:1px dashed rgba(168,93,64,.4)}
+  .daybar .feed{position:absolute;top:50%;width:10px;height:10px;border-radius:50%;background:var(--terracotta);transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(201,123,90,.15)}
+  .daybar .clbl{position:absolute;top:7px;right:9px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--terracotta-deep)}
+  .dayaxis{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-soft)}
+
+  .ps{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,1.8vw,20px);margin:1.3vh 0}
+  .pscard{background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.2);border-radius:14px;padding:clamp(13px,2.2vh,20px);display:flex;flex-direction:column;gap:.5em}
+  .pscard{border-left:3px solid var(--terracotta)}
+  .pscard .p{display:flex;align-items:center;gap:.5em;font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.05vh,18px);color:var(--ink)}
+  .pscard .s{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);line-height:1.35;padding-left:1.1em;position:relative}
+  .pscard .s::before{content:"\2192";position:absolute;left:0;color:var(--sage-deep);font-weight:700}
+
+  .storage{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(12px,1.8vw,22px);margin:1.7vh 0 1vh}
+  .store{border-radius:16px;padding:clamp(16px,2.8vh,26px) clamp(10px,1.4vw,16px);text-align:center;border:1px solid rgba(168,93,64,.2)}
+  .store:nth-child(1){background:linear-gradient(160deg,rgba(216,165,92,.20),rgba(216,165,92,.05))}
+  .store:nth-child(2){background:linear-gradient(160deg,rgba(140,155,126,.20),rgba(140,155,126,.05))}
+  .store:nth-child(3){background:linear-gradient(160deg,rgba(120,150,175,.22),rgba(120,150,175,.05))}
+  .store .ic{color:var(--terracotta-deep);display:flex;justify-content:center;margin-bottom:.5vh}
+  .store .ic svg{width:clamp(26px,4vh,36px);height:clamp(26px,4vh,36px)}
+  .store .num{font-family:'Fraunces';font-weight:500;font-size:clamp(26px,5vh,46px);line-height:1;color:var(--ink)}
+  .store .unit{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);margin-top:.3vh}
+  .store .where{font-weight:700;letter-spacing:.12em;text-transform:uppercase;font-size:clamp(9px,1.2vh,11px);color:var(--terracotta-deep);margin-top:.8vh}
+
+  .triage{display:grid;grid-template-columns:1fr;gap:clamp(10px,1.5vh,15px);margin:1.3vh 0}
+  .tri{display:flex;gap:.9em;align-items:flex-start;background:rgba(255,255,255,.5);border:1px solid rgba(168,93,64,.16);border-left-width:5px;border-radius:12px;padding:clamp(12px,2vh,18px) clamp(14px,2vw,20px)}
+  .tri .dot{flex:0 0 auto;width:13px;height:13px;border-radius:50%;margin-top:.3em}
+  .tri.green{border-left-color:var(--sage-deep)} .tri.green .dot{background:var(--sage-deep)}
+  .tri.amber{border-left-color:var(--gold)} .tri.amber .dot{background:var(--gold)}
+  .tri.red{border-left-color:var(--terracotta-deep)} .tri.red .dot{background:var(--terracotta-deep)}
+  .tri b{font-family:'Fraunces';font-weight:500;font-size:clamp(14px,2.05vh,18px);color:var(--ink);display:block;margin-bottom:.15em}
+  .tri span{font-size:clamp(12px,1.7vh,15px);color:var(--ink-soft);line-height:1.35}
+
+  @media(max-width:680px){
+    .stats,.storage,.ps{grid-template-columns:1fr 1fr}
+    .cycle{flex-direction:column}
+    .cycle .arrow{transform:rotate(90deg)}
+  }
+
+  /* per-slide narration bar */
+  .narrate{position:fixed;top:14px;left:50%;transform:translateX(-50%);z-index:55;display:flex;gap:8px;align-items:center}
+  .narrate-btn{font-family:'Mulish';font-weight:600;font-size:13px;border:none;cursor:pointer;background:rgba(201,123,90,.94);color:#fff;border-radius:999px;padding:7px 16px 7px 14px;display:flex;align-items:center;gap:.45em;transition:background .2s,transform .2s;box-shadow:0 6px 18px -8px rgba(59,42,34,.6)}
+  .narrate-btn:hover{background:var(--terracotta-deep);transform:translateY(-1px)}
+  .narrate-btn.playing{background:var(--sage-deep)}
+  .narrate select{font-family:'Mulish';font-size:12px;border:none;border-radius:999px;padding:7px 12px;background:rgba(251,245,236,.94);color:var(--ink);cursor:pointer;box-shadow:0 6px 18px -8px rgba(59,42,34,.6)}
+  .narrate-toast{position:fixed;top:54px;left:50%;transform:translateX(-50%);z-index:55;background:rgba(43,33,27,.92);color:var(--cream);font-size:12px;padding:6px 14px;border-radius:999px;opacity:0;transition:opacity .3s;pointer-events:none}
+  .narrate-toast.show{opacity:1}
+
+  @media (max-width:680px){
+    .layout-split,.hero{grid-template-columns:1fr}
+    .layout-split .col-media,.hero .col-media{display:none}
+    .afflist.two{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+
+<div class="progress" id="progress"></div>
+<div class="deck" id="deck">
+
+  <section class="slide hero">
+  <div class="col-text pad">
+    <div class="inner">
+      <div class="eyebrow">HLR &amp; säkerhet</div>
+      <h1>Trygghet &amp;<br>första hjälpen</h1>
+      <div class="sub">Lugnt, konkret och utan skräck — så att ni vågar agera</div>
+      <div class="names">
+        <span class="for">För</span>
+        <span class="who">Felicia &amp; Joakim</span>
+        <span class="leader">Tillsammans med Marie</span>
+      </div>
+    </div>
+  </div>
+  <div class="col-media"><img src="images/cover.png" alt="Förälder som håller sitt barn tryggt och nära"></div>
+</section>
+
+<!-- 2 — AGENDA -->
+<section class="slide layout-split">
+  <div class="col-text pad">
+    <div class="inner">
+      <div class="eyebrow">Idag</div>
+      <h2>Det här går vi <em>igenom</em></h2>
+      <ul class="clean">
+        <li><b>Säker sömn &amp; en trygg bostad</b> <span>— det som förebygger mest</span></li>
+        <li><b>Bad, bilbarnstol &amp; kvävning</b> <span>— vardagens situationer</span></li>
+        <li><b>Luftvägsstopp &amp; HLR på spädbarn</b> <span>— steg för steg</span></li>
+        <li><b>Ring 112, feber &amp; förgiftning</b> <span>— när och hur ni larmar</span></li>
+      </ul>
+      <p class="note">Öva gärna på en riktig HLR-kurs med docka — att känna trycket i händerna går inte att läsa sig till. Den här genomgången är ett utkast som granskas av vårdpersonal och ersätter inte praktisk träning.</p>
+    </div>
+  </div>
+  <div class="col-media"><img src="images/kurs.png" alt="Föräldrar som lugnt övar första hjälpen på en docka"></div>
+</section>
+
+<!-- 3 — SÄKER SÖMN -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Förebygger mest</div>
+    <h2>Säker <em>sömn</em></h2>
+    <p class="lead">De flesta olyckor undviks i sovsituationen. Några enkla vanor gör störst skillnad.</p>
+    <div class="ps">
+      <div class="pscard"><div class="p">Alltid på rygg</div><div class="s">Lägg barnet på rygg att sova, dygnet runt — även för korta tupplurar.</div></div>
+      <div class="pscard"><div class="p">Fast, bar madrass</div><div class="s">Tomt runt om: kuddar, täcken, gosedjur och filtar väntar tills barnet är större.</div></div>
+      <div class="pscard"><div class="p">Eget sömnutrymme</div><div class="s">Nära er men i egen säng; samsovning kräver särskild försiktighet.</div></div>
+      <div class="pscard"><div class="p">Lagom svalt</div><div class="s">Inte för varmt, ingen mössa inomhus — känn i nacken om barnet är lagom.</div></div>
+    </div>
+    <p class="note">Marie: stäm av råden om samsovning och temperatur mot era egna BVC-rutiner.</p>
+  </div>
+</section>
+
+<!-- 4 — FÖREBYGG HEMMA -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Hemma</div>
+    <h2>Förebygg i <em>vardagen</em></h2>
+    <p class="lead">Barnet blir snabbt rörligare än ni tror. Tänk ett steg före — det mesta handlar om enkla vanor.</p>
+    <div class="stats">
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.6c2.9 3.7 5.3 6.4 5.3 9.4a5.3 5.3 0 0 1-10.6 0c0-3 2.4-5.7 5.3-9.4z"/></svg></div><b>Heta vätskor</b><span>Drick aldrig kaffe eller te med barnet i famnen; vrid kastrullhandtag inåt</span></div>
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 11l4 4 4-4"/><path d="M5 20h14"/></svg></div><b>Fall</b><span>Håll en hand på barnet på skötbord och säng; spänn fast i vagn och stol</span></div>
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="2.2"/></svg></div><b>Små föremål</b><span>Allt som ryms i en toarulle är en kvävningsrisk — håll utom räckhåll</span></div>
+      <div class="stat"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 7c3 0 3 4 6 4s3-4 6-4"/><path d="M5 15c3 0 3 4 6 4s3-4 6-4"/></svg></div><b>Sladdar &amp; snören</b><span>Persiennsnören, laddsladdar och halsband bort från barnets närhet</span></div>
+    </div>
+    <p class="note">Säkra också spis, ugnslucka, trappor och kemikalier i takt med att barnet börjar förflytta sig.</p>
+  </div>
+</section>
+
+<!-- 5 — BAD & VATTEN -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Bad &amp; vatten</div>
+    <h2>Aldrig ensam i <em>vattnet</em></h2>
+    <p class="lead">Barn kan komma till skada i mycket grunt vatten, snabbt och ljudlöst. Vid badet finns bara en regel som inte får tummas på.</p>
+    <ul class="clean" style="margin-top:1.4vh">
+      <li><b>Lämna aldrig barnet ensamt</b> <span>— inte ens en sekund för att hämta en handduk; ta med barnet om du måste gå</span></li>
+      <li><b>Håll greppet hela tiden</b> <span>— en hand om barnet under hela badet, vattnet grunt</span></li>
+      <li><b>Kolla temperaturen</b> <span>— ljummet, runt kroppstemperatur; känn med armbågen, inte handen</span></li>
+      <li><b>Töm baljan direkt efteråt</b> <span>— och håll lock på toalett och hink med vatten</span></li>
+    </ul>
+    <p class="note">Telefonen kan vänta — det är de få sekundernas uppmärksamhet som skyddar.</p>
+  </div>
+</section>
+
+<!-- 6 — BILBARNSTOL -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">I bilen</div>
+    <h2>Bakåtvänd &amp; rätt <em>monterad</em></h2>
+    <p class="lead">Bakåtvänt åkande skyddar nacke och huvud bäst. Det är det viktigaste valet ni gör för bilresan.</p>
+    <ul class="clean" style="margin-top:1.4vh">
+      <li><b>Åk bakåtvänt länge</b> <span>— så länge som möjligt, gärna upp mot fyra års ålder</span></li>
+      <li><b>Rätt monterad &amp; spänd</b> <span>— stolen fast i bilen, bältet plant och nära kroppen, inga glapp</span></li>
+      <li><b>Ingen tjock overall under bältet</b> <span>— ta av ytterplagget så bältet sitter tätt; lägg en filt över i stället</span></li>
+      <li><b>Aldrig fram med aktiv krockkudde</b> <span>— bakåtvänd stol bara där krockkudden är avstängd</span></li>
+    </ul>
+    <p class="note">Marie: hänvisa gärna till en aktuell krocktest-källa och er regions råd om montering.</p>
+  </div>
+</section>
+
+<!-- 7 — KVÄVNING FÖREBYGG -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Kvävning — förebygg</div>
+    <h2>Det som tar sig till <em>munnen</em></h2>
+    <div class="ps">
+      <div class="pscard"><div class="p">Små föremål</div><div class="s">Knappbatterier, mynt, pärlor och leksaksdelar är farligast — håll dem helt borta.</div></div>
+      <div class="pscard"><div class="p">Mat i bitar</div><div class="s">Skär runt mat på längden, undvik hela nötter, druvor och hård rå morot till de minsta.</div></div>
+      <div class="pscard"><div class="p">Ballonger</div><div class="s">Trasig ballong är en klassisk kvävningsrisk — plocka undan direkt, blås inte upp nära barnet.</div></div>
+      <div class="pscard"><div class="p">Ät stilla</div><div class="s">Låt barnet äta sittande och lugnt — aldrig springande, liggande eller i bilen.</div></div>
+    </div>
+    <p class="note">Sitt med vid måltid den första tiden — då hör och ser ni snabbt om något fastnar.</p>
+  </div>
+</section>
+
+<!-- 8 — LUFTVÄGSSTOPP -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Om något fastnar</div>
+    <h2>Luftvägsstopp hos <em>spädbarn</em></h2>
+    <p class="lead">Om barnet inte kan hosta, gråta eller andas — agera direkt. Hostar barnet kraftigt: stör inte, låt det hosta.</p>
+    <div class="cycle">
+      <div class="node"><div class="ic">1</div><b>5 ryggslag</b><span>Barnet med ansiktet nedåt och huvudet lågt över din arm; bestämda slag mellan skulderbladen</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ic">2</div><b>5 bröstkompr.</b><span>Sitter det kvar — vänd barnet, två fingrar mitt på bröstet, fem tryck</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ic">3</div><b>Larma 112</b><span>Lossnar det inte — ring 112 och växla ryggslag och kompressioner tills hjälp kommer</span></div>
+    </div>
+    <div class="loopback"><span class="lic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.5v5c0 4.5-3 7.8-7 9.5-4-1.7-7-5-7-9.5v-5z"/><path d="M9 12l2 2 4-4"/></svg></span> <span>Marie: verifiera antal, teknik och ordning mot gällande riktlinjer (HLR-rådet, barn) innan kursen används.</span></div>
+    <p class="note">Detta är ett utkast — texten ska granskas av vårdpersonal.</p>
+  </div>
+</section>
+
+<!-- 9 — HLR SPÄDBARN -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Om barnet inte andas</div>
+    <h2>HLR på <em>spädbarn</em></h2>
+    <p class="lead">Reagerar barnet inte och andas inte normalt — börja HLR och larma. Att göra något är alltid bättre än att inte göra något.</p>
+    <div class="cycle">
+      <div class="node"><div class="ic">1</div><b>Kolla &amp; larma</b><span>Reagerar barnet? Andas det normalt? Ropa på hjälp, ring 112 och sätt på högtalare</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ic">2</div><b>5 inblåsningar</b><span>Täck barnets mun och näsa, ge små, lugna luftpustar tills bröstet höjer sig</span></div>
+      <div class="arrow">→</div>
+      <div class="node"><div class="ic">3</div><b>30:2</b><span>30 kompressioner mitt på bröstet i snabb takt, sedan 2 inblåsningar — fortsätt</span></div>
+    </div>
+    <div class="loopback"><span class="lic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l7 2.5v5c0 4.5-3 7.8-7 9.5-4-1.7-7-5-7-9.5v-5z"/><path d="M9 12l2 2 4-4"/></svg></span> <span>Marie: verifiera mot gällande svenska riktlinjer (HLR-rådet, barn-HLR) — antal inblåsningar, tryckdjup och förhållandet 30:2 ska stämmas av. Detta är ett utkast.</span></div>
+    <p class="note">112-operatören kan vägleda er hela tiden — lägg inte på.</p>
+  </div>
+</section>
+
+<!-- 10 — RING 112 -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Larma</div>
+    <h2>Ring <em>112</em></h2>
+    <p class="lead">Tveka inte att ringa. Det är aldrig fel att larma när ni är oroliga för barnets andning eller medvetande.</p>
+    <div class="highlight">
+      <span class="tag">Säg lugnt och tydligt</span>
+      <p>Var ni är, vad som hänt, att det gäller ett spädbarn — och svara på operatörens frågor. Lägg inte på förrän ni får besked.</p>
+    </div>
+    <ul class="clean" style="margin-top:1.8vh">
+      <li><b>Ring direkt vid</b> <span>— andningsstopp, barn som inte vaknar, kramp som inte släpper eller svår allergisk reaktion</span></li>
+      <li><b>Sätt på högtalaren</b> <span>— så har ni händerna fria och kan följa instruktionerna samtidigt</span></li>
+    </ul>
+    <p class="note">Spara 112 i minnet och ha er adress lättillgänglig — i stress glömmer man det självklara.</p>
+  </div>
+</section>
+
+<!-- 11 — FEBER & SJUKDOM -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Feber &amp; sjukdom</div>
+    <h2>Hur akut <em>är det?</em></h2>
+    <p class="lead">De flesta infektioner sköts hemma. Men ålder och andning avgör hur snabbt ni behöver agera.</p>
+    <div class="triage">
+      <div class="tri green"><div class="dot"></div><div><b>Hemma — håll koll</b><span>Äldre spädbarn med lättare förkylning som äter, dricker och är piggt i perioder. Ring 1177 vid frågor.</span></div></div>
+      <div class="tri amber"><div class="dot"></div><div><b>Kontakta vården samma dag</b><span>Feber som håller i sig, hängigt barn som äter och dricker dåligt, eller nytillkommet utslag. Ring 1177.</span></div></div>
+      <div class="tri red"><div class="dot"></div><div><b>Ring 112 / akut</b><span>Nyfödd med feber, andningssvårigheter, slappt eller svårväckt barn, kramper eller små röda prickar som inte bleknar.</span></div></div>
+    </div>
+    <p class="note">Marie: verifiera åldersgränsen för "nyfödd med feber = direkt" och triagenivåerna mot 1177.</p>
+  </div>
+</section>
+
+<!-- 12 — FÖRGIFTNING -->
+<section class="slide layout-default">
+  <div class="pad inner">
+    <div class="eyebrow">Förgiftning</div>
+    <h2>Om barnet fått i sig <em>något</em></h2>
+    <p class="lead">Vid misstanke om förgiftning — ring och fråga direkt, vänta inte på symtom.</p>
+    <ul class="clean" style="margin-top:1.4vh">
+      <li><b>Giftinformationscentralen: 010-456 6700</b> <span>— öppet dygnet runt; vid medvetslöshet, andningssvårigheter eller kramp ring 112</span></li>
+      <li><b>Vanliga risker</b> <span>— läkemedel, rengöringsmedel, nikotin och snus, alkohol, eteriska oljor och vissa växter</span></li>
+      <li><b>Framkalla inte kräkning</b> <span>— gör det bara om Giftinformationscentralen säger det; skölj munnen vid frätande ämnen</span></li>
+      <li><b>Ta med förpackningen</b> <span>— så vet vården vad och hur mycket barnet fått i sig</span></li>
+    </ul>
+    <p class="note">Förvara läkemedel och kemikalier inlåst och högt — de flesta tillbud sker i hemmet.</p>
+  </div>
+</section>
+
+<!-- 13 — AVSLUTNING -->
+<section class="slide closing layout-center">
+  <div class="pad inner">
+    <div class="eyebrow" style="justify-content:center">Du räcker till</div>
+    <h1>Du behöver inte<br>vara expert.</h1>
+    <div class="ask">Era frågor?</div>
+    <div class="calm">Du behöver bara våga göra något — och ringa 112. Hjälpen finns ett samtal bort.</div>
+  </div>
+</section>
+</div>
+
+<button class="navbtn" id="prev" aria-label="Föregående">‹</button>
+<button class="navbtn" id="next" aria-label="Nästa">›</button>
+<div class="dots" id="dots"></div>
+<div class="counter" id="counter"><b>1</b> / 15</div>
+<div class="hint" id="hint">← → bläddra · F helskärm</div>
+<div class="narrate">
+  <button class="narrate-btn" id="narrateBtn" aria-label="Lyssna på sidan">▶ <span>Lyssna</span></button>
+  <select id="langSel" aria-label="Språk">
+    <option value="sv">Svenska</option>
+    <option value="en">English</option>
+    <option value="ar">العربية</option>
+    <option value="so">Soomaali</option>
+    <option value="fa">فارسی</option>
+  </select>
+</div>
+
+<script>
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let i = 0;
+  const progress = document.getElementById('progress');
+  const counter = document.getElementById('counter');
+  const dotsWrap = document.getElementById('dots');
+  const hint = document.getElementById('hint');
+
+  slides.forEach((_, idx) => {
+    const b = document.createElement('button');
+    b.addEventListener('click', () => go(idx));
+    dotsWrap.appendChild(b);
+  });
+  const dots = Array.from(dotsWrap.children);
+
+  function render(){
+    slides.forEach((s, idx) => s.classList.toggle('active', idx === i));
+    dots.forEach((d, idx) => d.classList.toggle('on', idx === i));
+    progress.style.width = ((i) / (total - 1) * 100) + '%';
+    counter.innerHTML = '<b>' + (i + 1) + '</b> / ' + total;
+  }
+  function go(n){ i = Math.max(0, Math.min(total - 1, n)); render(); }
+  function next(){ go(i + 1); }
+  function prev(){ go(i - 1); }
+
+  document.getElementById('next').addEventListener('click', next);
+  document.getElementById('prev').addEventListener('click', prev);
+
+  document.addEventListener('keydown', e => {
+    if(['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); next(); }
+    else if(['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); prev(); }
+    else if(e.key === 'Home'){ go(0); }
+    else if(e.key === 'End'){ go(total - 1); }
+    else if(e.key.toLowerCase() === 'f'){
+      if(!document.fullscreenElement) document.documentElement.requestFullscreen();
+      else document.exitFullscreen();
+    }
+  });
+
+  let tx = null;
+  document.addEventListener('touchstart', e => tx = e.changedTouches[0].clientX, {passive:true});
+  document.addEventListener('touchend', e => {
+    if(tx === null) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if(Math.abs(dx) > 50){ dx < 0 ? next() : prev(); }
+    tx = null;
+  }, {passive:true});
+
+  setTimeout(() => hint.classList.add('fade'), 5000);
+
+  // ---- unified audio: affirmations + per-slide narration ----
+  let curAudio = null, curBtn = null, curKind = null;
+  function resetBtn(){
+    if(!curBtn) return;
+    curBtn.classList.remove('playing');
+    if(curKind === 'aff'){ curBtn.textContent = '▶'; }
+    else { const s = curBtn.querySelector('span'); if(s) s.textContent = 'Lyssna'; }
+    curBtn = null;
+  }
+  function stopAudio(){ if(curAudio){ curAudio.pause(); curAudio = null; } resetBtn(); curKind = null; }
+  function playSrc(src, btn, kind){
+    const same = (btn === curBtn);
+    stopAudio();
+    if(same) return;
+    const a = new Audio(src); curAudio = a; curBtn = btn; curKind = kind;
+    btn.classList.add('playing');
+    if(kind === 'aff'){ btn.textContent = '❚❚'; }
+    else { const s = btn.querySelector('span'); if(s) s.textContent = 'Spelar…'; }
+    a.play().catch(()=>{});
+    a.onended = () => { if(btn === curBtn) stopAudio(); };
+    a.onerror = () => { if(kind === 'nar') toast('Uppläsning läggs till snart'); if(btn === curBtn) stopAudio(); };
+  }
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.play');
+    if(btn) playSrc(btn.dataset.src, btn, 'aff');
+  });
+
+  // per-slide narration (any language, Maries röst)
+  const langSel = document.getElementById('langSel');
+  const narrateBtn = document.getElementById('narrateBtn');
+  const savedLang = localStorage.getItem('kurs-lang');
+  if(savedLang) langSel.value = savedLang;
+  langSel.addEventListener('change', () => { localStorage.setItem('kurs-lang', langSel.value); stopAudio(); });
+  narrateBtn.addEventListener('click', () => {
+    playSrc('audio/narration/' + langSel.value + '/slide-' + (i + 1) + '.mp3', narrateBtn, 'nar');
+  });
+
+  let toastEl;
+  function toast(msg){
+    if(!toastEl){ toastEl = document.createElement('div'); toastEl.className = 'narrate-toast'; document.body.appendChild(toastEl); }
+    toastEl.textContent = msg; toastEl.classList.add('show');
+    clearTimeout(toast._t); toast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  }
+
+  let _go = go;
+  go = function(n){ stopAudio(); _go(n); };
+
+  render();
+</script>
+</body>
+</html>
